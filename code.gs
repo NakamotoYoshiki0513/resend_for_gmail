@@ -1,14 +1,14 @@
 function createResendButton(e) {
 
   var composeAction = CardService.newAction()
-  .setFunctionName('createDraft');
+    .setFunctionName('createDraft');
   var composeButton = CardService.newTextButton()
-  .setText('Resend (Create draft)')
-  .setComposeAction(composeAction, CardService.ComposedEmailType.STANDALONE_DRAFT);
-  
+    .setText('Resend (Create draft)')
+    .setComposeAction(composeAction, CardService.ComposedEmailType.STANDALONE_DRAFT);
+
   var section = CardService.newCardSection();
   section.addWidget(composeButton);
-  
+
   var card = CardService.newCardBuilder()
     .addSection(section)
     .build();
@@ -17,10 +17,10 @@ function createResendButton(e) {
 }
 
 function createDraft(e) {
-  
+
   var accessToken = e.messageMetadata.accessToken;
   GmailApp.setCurrentMessageAccessToken(accessToken);
-  
+
   var messageId = e.messageMetadata.messageId;
   var message = GmailApp.getMessageById(messageId);
 
@@ -30,8 +30,8 @@ function createDraft(e) {
   };
 
   var body = message.getBody();
+  body = message.getPlainBody();
   if (isHtmlMail(message)) {
-    body = message.getPlainBody();
     options.htmlBody = message.getBody();
   }
 
@@ -41,16 +41,16 @@ function createDraft(e) {
     body,
     options
   );
-  
+
   return CardService.newComposeActionResponseBuilder()
-  .setGmailDraft(draft).build();
+    .setGmailDraft(draft).build();
 }
 
 function isHtmlMail(message) {
-  if(message.getHeader('Content-Type').indexOf('text/html') !== -1) {
+  if (message.getHeader('Content-Type').indexOf('text/html') !== -1) {
     return true;
   }
-  if(message.getHeader('Content-Type').indexOf('multipart/alternative') !== -1) {
+  if (message.getHeader('Content-Type').indexOf('multipart/alternative') !== -1) {
     return true;
   }
   return false;
